@@ -3,7 +3,7 @@ return {
   event = "VeryLazy",
   config = function()
     require("toggleterm").setup({
-      open_mapping = [[<c-/>]],
+      open_mapping = [[<c-_>]],
       direction = "float",
       float_opts = {
         border = "curved",

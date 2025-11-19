@@ -16,6 +16,7 @@ return {
             "pyright",
             "rust_analyzer",
             "clangd",
+            "ts_ls",
             "html",
             "cssls",
             "jsonls",
@@ -42,6 +43,16 @@ return {
           vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
           vim.keymap.set("n", "gf", "<cmd>e <cfile><CR>", opts)
           vim.keymap.set("n", "gF", "<cmd>e <cfile>:<cWORD><CR>", opts)
+
+          -- Format on save
+          if client.server_capabilities.documentFormattingProvider then
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              callback = function()
+                vim.lsp.buf.format({ bufnr = bufnr })
+              end,
+            })
+          end
        end
 
        -- Diagnostic keymaps (global)
@@ -75,6 +86,10 @@ return {
           capabilities = capabilities,
         })
         vim.lsp.config('clangd', {
+          on_attach = on_attach,
+          capabilities = capabilities,
+        })
+        vim.lsp.config('ts_ls', {
           on_attach = on_attach,
           capabilities = capabilities,
         })
