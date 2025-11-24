@@ -15,12 +15,11 @@ return {
 	---@type blink.cmp.Config
 	opts = {
 		keymap = {
-			preset = "default",
 			["<C-j>"] = { "select_next", "fallback" },
 			["<C-k>"] = { "select_prev", "fallback" },
 			["<Tab>"] = { "select_next", "fallback" },
 			["<C-e>"] = { "hide", "fallback" },
-			["<CR>"] = { "accept", "show_signature", "fallback" },
+			["<CR>"] = { "accept", "fallback" },
 		},
 
 		signature = {
