@@ -27,10 +27,10 @@ return {
         })
      end,
    },
-    {
-      "neovim/nvim-lspconfig",
-      event = "VeryLazy",
-       dependencies = { "williamboman/mason-lspconfig.nvim", "Saghen/blink.cmp" },
+     {
+       "neovim/nvim-lspconfig",
+       event = "VeryLazy",
+        dependencies = { "williamboman/mason-lspconfig.nvim", "Saghen/blink.cmp" },
        config = function()
         -- LSP on_attach function
        local on_attach = function(client, bufnr)
@@ -55,9 +55,9 @@ return {
           end
        end
 
-       -- Diagnostic keymaps (global)
-       vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
-       vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+        -- Diagnostic keymaps (global)
+        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
 
         -- LSP capabilities
         local capabilities = require('blink.cmp').get_lsp_capabilities()
