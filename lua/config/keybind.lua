@@ -5,7 +5,7 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("x", "p", '"_dP') -- doesn't copy the pasted line
 
 -- find and replace for all strings within the file
-vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+vim.keymap.set("n", "<leader>s", ":%s///g<Left><Left><Left><Left>")
 
 -- Toggle netrw function
 local function toggle_netrw()
