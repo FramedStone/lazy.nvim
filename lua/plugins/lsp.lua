@@ -1,14 +1,12 @@
 return {
 	{
 		"williamboman/mason.nvim",
-		event = "VeryLazy",
 		config = function()
 			require("mason").setup({})
 		end,
 	},
 	{
 		"WhoIsSethDaniel/mason-tool-installer",
-		event = "VeryLazy",
 		config = function()
 			require("mason-tool-installer").setup({
 				ensure_installed = {
@@ -29,36 +27,35 @@ return {
 					"luacheck",
 					"stylua",
 					"markdownlint",
+					-- Java
+					"java-debug-adapter",
+					"java-test",
 				},
 			})
 		end,
 	},
 	{
 		"williamboman/mason-lspconfig.nvim",
-		event = "VeryLazy",
 		config = function()
 			require("mason-lspconfig").setup({
-				automatic_enable = true,
+				-- Automatically install servers configured via vim.lsp.config
+				-- except for jdtls which we manage manually via ftplugin
+				automatic_installation = {
+					exclude = { "jdtls" },
+				},
 			})
 		end,
 	},
 	{
 		"neovim/nvim-lspconfig",
-		event = "VeryLazy",
-		dependencies = { "williamboman/mason-lspconfig.nvim", "Saghen/blink.cmp" },
 		config = function()
-			-- LSP on_attach function
-			local on_attach = function(client, bufnr)
-				-- Formatting handled by conform.nvim
-			end
+			-- Set global capabilities for ALL servers using the special "*" name
+			vim.lsp.config("*", {
+				capabilities = require("blink.cmp").get_lsp_capabilities(),
+			})
 
-			-- LSP capabilities
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-			-- Configure LSP servers
+			-- Only configure servers that need custom settings
 			vim.lsp.config("lua_ls", {
-				on_attach = on_attach,
-				capabilities = capabilities,
 				settings = {
 					Lua = {
 						diagnostics = {
@@ -70,35 +67,42 @@ return {
 					},
 				},
 			})
-			vim.lsp.config("ts_ls", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-			vim.lsp.config("sqlls", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-			vim.lsp.config("jdtls", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-			vim.lsp.config("marksman", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-			vim.lsp.config("yamlls", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-			vim.lsp.config("taplo", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
-			vim.lsp.config("dockerls", {
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
+
+			-- Enable all LSP servers (can pass a table to enable multiple at once)
+			vim.lsp.enable({ "lua_ls", "ts_ls", "sqlls", "marksman", "yamlls", "taplo", "dockerls" })
 		end,
-		vim.lsp.enable("jdtls"),
+	},
+	{ "mfussenegger/nvim-jdtls" },
+	{
+		"mfussenegger/nvim-dap",
+		config = function()
+			-- DAP configuration will be set up in jdtls_setup.lua
+		end,
+	},
+	{
+		"rcarriga/nvim-dap-ui",
+		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+		config = function()
+			local dap, dapui = require("dap"), require("dapui")
+			dapui.setup()
+
+			-- Auto-open/close dapui when debugging starts/ends
+			dap.listeners.after.event_initialized["dapui_config"] = function()
+				dapui.open()
+			end
+			dap.listeners.before.event_terminated["dapui_config"] = function()
+				dapui.close()
+			end
+			dap.listeners.before.event_exited["dapui_config"] = function()
+				dapui.close()
+			end
+		end,
+	},
+	{
+		"theHamsta/nvim-dap-virtual-text",
+		dependencies = { "mfussenegger/nvim-dap" },
+		config = function()
+			require("nvim-dap-virtual-text").setup()
+		end,
 	},
 }

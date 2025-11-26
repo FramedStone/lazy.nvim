@@ -26,9 +26,9 @@ return {
 			enabled = true,
 			trigger = {
 				enabled = true,
-				show_on_keyword = true,
-				show_on_trigger_character = true,
-				show_on_insert = true,
+				show_on_keyword = false, -- Don't auto-show on keywords
+				show_on_trigger_character = true, -- Only show on '(' or ','
+				show_on_insert = false, -- Don't auto-show when entering insert mode
 				show_on_insert_on_trigger_character = true,
 			},
 		},
