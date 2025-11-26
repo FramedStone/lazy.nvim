@@ -23,6 +23,8 @@ vim.opt.smartcase = true
 vim.opt.foldmethod = "manual"
 vim.opt.foldenable = true
 vim.opt.foldcolumn = "1"
+vim.opt.guifont = "FiraCode Nerd Font:h14.5"
 
 -- undotree
 vim.opt.undofile = true
+
