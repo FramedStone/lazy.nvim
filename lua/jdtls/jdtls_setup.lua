@@ -1,7 +1,25 @@
 local M = {}
 
 function M:setup()
-	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+	-- Find the actual Java project root by prioritizing project-specific markers
+	-- This ensures proper monorepo support where each Java project gets its own LSP instance
+	local root_dir = require("jdtls.setup").find_root({
+		-- Java project files (highest priority for monorepo support)
+		"pom.xml",
+		"build.gradle",
+		"build.gradle.kts",
+		"settings.gradle",
+		"settings.gradle.kts",
+		-- Build wrapper scripts
+		"mvnw",
+		"gradlew",
+		-- Git repository (lowest priority, fallback)
+		".git",
+	})
+
+	-- Use the Java project root directory name for workspace isolation
+	-- This prevents workspace conflicts in monorepos
+	local project_name = vim.fn.fnamemodify(root_dir or vim.fn.getcwd(), ":p:h:t")
 	local workspace_dir = vim.fn.stdpath("data")
 		.. package.config:sub(1, 1)
 		.. "jdtls-workspace"
@@ -70,7 +88,7 @@ function M:setup()
 		-- 💀
 		-- This is the default if not provided, you can remove it. Or adjust as needed.
 		-- One dedicated LSP server & client will be started per unique root_dir
-		root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew" }),
+		root_dir = root_dir,
 
 		-- Here you can configure eclipse.jdt.ls specific settings
 		-- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
