@@ -3,7 +3,7 @@ return {
 		"williamboman/mason.nvim",
 		event = "VeryLazy",
 		config = function()
-			require("mason").setup()
+			require("mason").setup({})
 		end,
 	},
 	{
@@ -99,5 +99,6 @@ return {
 				capabilities = capabilities,
 			})
 		end,
+		vim.lsp.enable("jdtls"),
 	},
 }
