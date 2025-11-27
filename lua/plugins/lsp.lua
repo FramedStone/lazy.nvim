@@ -91,11 +91,28 @@ return {
 				dapui.open()
 			end
 			dap.listeners.before.event_terminated["dapui_config"] = function()
-				dapui.close()
+				-- dapui.close()
 			end
 			dap.listeners.before.event_exited["dapui_config"] = function()
-				dapui.close()
+				-- dapui.close()
 			end
+
+			-- custom configuration
+			dap.configurations.java = {
+				{
+					name = "Debug Launch (2GB)",
+					type = "java",
+					request = "launch",
+					vmArgs = "" .. "-Xmx2g ",
+				},
+				{
+					name = "Debug Attach (8000)",
+					type = "java",
+					request = "launch",
+					hostName = "127.0.0.1",
+					port = 8000,
+				},
+			}
 		end,
 	},
 	{

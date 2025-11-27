@@ -47,23 +47,23 @@ function M:setup()
 			"--add-opens",
 			"java.base/java.lang=ALL-UNNAMED",
 
-		-- 💀
-		"-jar",
-		-- Use vim.fn.glob to automatically find the launcher jar
-		vim.fn.glob(
-			vim.fn.stdpath("data")
-				.. package.config:sub(1, 1)
-				.. "mason"
-				.. package.config:sub(1, 1)
-				.. "packages"
-				.. package.config:sub(1, 1)
-				.. "jdtls"
-				.. package.config:sub(1, 1)
-				.. "plugins"
-				.. package.config:sub(1, 1)
-				.. "org.eclipse.equinox.launcher_*.jar"
-		),
-		-- Must point to the eclipse.jdt.ls installation
+			-- 💀
+			"-jar",
+			-- Use vim.fn.glob to automatically find the launcher jar
+			vim.fn.glob(
+				vim.fn.stdpath("data")
+					.. package.config:sub(1, 1)
+					.. "mason"
+					.. package.config:sub(1, 1)
+					.. "packages"
+					.. package.config:sub(1, 1)
+					.. "jdtls"
+					.. package.config:sub(1, 1)
+					.. "plugins"
+					.. package.config:sub(1, 1)
+					.. "org.eclipse.equinox.launcher_*.jar"
+			),
+			-- Must point to the eclipse.jdt.ls installation
 
 			-- 💀
 			"-configuration",
@@ -97,65 +97,74 @@ function M:setup()
 			java = {},
 		},
 
-	-- Language server `initializationOptions`
-	-- You need to extend the `bundles` with paths to jar files
-	-- if you want to use additional eclipse.jdt.ls plugins.
-	--
-	-- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
-	--
-	-- If you don't plan on using the debugger or other eclipse.jdt.ls plugins you can remove this
-	init_options = {
-		bundles = vim.list_extend({
-			-- java-debug-adapter jar
-			vim.fn.glob(
-				vim.fn.stdpath("data")
-					.. package.config:sub(1, 1)
-					.. "mason"
-					.. package.config:sub(1, 1)
-					.. "packages"
-					.. package.config:sub(1, 1)
-					.. "java-debug-adapter"
-					.. package.config:sub(1, 1)
-					.. "extension"
-					.. package.config:sub(1, 1)
-					.. "server"
-					.. package.config:sub(1, 1)
-					.. "com.microsoft.java.debug.plugin-*.jar"
+		-- Language server `initializationOptions`
+		-- You need to extend the `bundles` with paths to jar files
+		-- if you want to use additional eclipse.jdt.ls plugins.
+		--
+		-- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
+		--
+		-- If you don't plan on using the debugger or other eclipse.jdt.ls plugins you can remove this
+		init_options = {
+			bundles = vim.list_extend(
+				{
+					-- java-debug-adapter jar
+					vim.fn.glob(
+						vim.fn.stdpath("data")
+							.. package.config:sub(1, 1)
+							.. "mason"
+							.. package.config:sub(1, 1)
+							.. "packages"
+							.. package.config:sub(1, 1)
+							.. "java-debug-adapter"
+							.. package.config:sub(1, 1)
+							.. "extension"
+							.. package.config:sub(1, 1)
+							.. "server"
+							.. package.config:sub(1, 1)
+							.. "com.microsoft.java.debug.plugin-*.jar"
+					),
+				},
+				vim.split(
+					vim.fn.glob(
+						vim.fn.stdpath("data")
+							.. package.config:sub(1, 1)
+							.. "mason"
+							.. package.config:sub(1, 1)
+							.. "packages"
+							.. package.config:sub(1, 1)
+							.. "java-test"
+							.. package.config:sub(1, 1)
+							.. "extension"
+							.. package.config:sub(1, 1)
+							.. "server"
+							.. package.config:sub(1, 1)
+							.. "*.jar"
+					),
+					"\n"
+				)
 			),
-		}, vim.split(vim.fn.glob(
-			vim.fn.stdpath("data")
-				.. package.config:sub(1, 1)
-				.. "mason"
-				.. package.config:sub(1, 1)
-				.. "packages"
-				.. package.config:sub(1, 1)
-				.. "java-test"
-				.. package.config:sub(1, 1)
-				.. "extension"
-				.. package.config:sub(1, 1)
-				.. "server"
-				.. package.config:sub(1, 1)
-				.. "*.jar"
-		), "\n")),
-	},
+		},
 
-	-- Keymaps for Java-specific features
-	on_attach = function(client, bufnr)
-		local opts = { buffer = bufnr, noremap = true, silent = true }
+		-- Keymaps for Java-specific features
+		on_attach = function(client, bufnr)
+			local opts = { buffer = bufnr, noremap = true, silent = true }
 
-		-- Debug keymaps
-		vim.keymap.set("n", "<leader>bp", require("dap").toggle_breakpoint, opts)
-		vim.keymap.set("n", "<leader>dc", require("dap").continue, opts)
-		vim.keymap.set("n", "<leader>dt", require("dap").terminate, opts)
-		vim.keymap.set("n", "<leader>dj", require("dap").step_over, opts)
-		vim.keymap.set("n", "<leader>dk", require("dap").step_into, opts)
-		vim.keymap.set("n", "<leader>do", require("dap").step_out, opts)
+			-- Debug keymaps
+			vim.keymap.set("n", "<leader>bp", require("dap").toggle_breakpoint, opts)
+			vim.keymap.set("n", "<leader>dc", require("dap").continue, opts)
+			vim.keymap.set("n", "<leader>dt", function()
+				require("dap").terminate()
+				require("dapui").close()
+			end, opts)
+			vim.keymap.set("n", "<leader>dj", require("dap").step_over, opts)
+			vim.keymap.set("n", "<leader>dk", require("dap").step_into, opts)
+			vim.keymap.set("n", "<leader>do", require("dap").step_out, opts)
 
-		-- Test keymaps
-		vim.keymap.set("n", "<leader>tc", require("jdtls").test_class, opts)
-		vim.keymap.set("n", "<leader>tm", require("jdtls").test_nearest_method, opts)
-	end,
-}
+			-- Test keymaps
+			vim.keymap.set("n", "<leader>tc", require("jdtls").test_class, opts)
+			vim.keymap.set("n", "<leader>tm", require("jdtls").test_nearest_method, opts)
+		end,
+	}
 	-- This starts a new client & server,
 	-- or attaches to an existing client & server depending on the `root_dir`.
 	require("jdtls").start_or_attach(config)
