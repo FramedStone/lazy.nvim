@@ -9,11 +9,3 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.formatoptions:remove("o")
 	end,
 })
-
--- jdtls
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "java",
-	callback = function(args)
-		require("jdtls.jdtls_setup").setup()
-	end,
-})

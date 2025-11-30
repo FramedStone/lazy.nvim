@@ -21,20 +21,17 @@ require("lazy").setup({
 		-- import your plugins
 		{ import = "plugins" },
 		{
-			"folke/tokyonight.nvim",
-			lazy = false,
+			"catppuccin/nvim",
 			priority = 1000,
-			opts = {
-				style = "moon",
-			},
+			name = "catppuccin",
 			config = function()
-				vim.cmd.colorscheme("tokyonight")
+				vim.cmd.colorscheme("catppuccin")
 			end,
 		},
 	},
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.
-	install = { colorscheme = { "habamax" } },
+	install = { colorscheme = { "catppuccin" } },
 	-- automatically check for plugin updates
 	checker = { enabled = false },
 })

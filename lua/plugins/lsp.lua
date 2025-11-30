@@ -20,8 +20,8 @@ return {
 					"taplo",
 					"dockerls",
 					-- Linters and Formatters
-					"eslint",
-					"prettier",
+					"eslint_d",
+					"prettierd",
 					"checkstyle",
 					"google-java-format",
 					"luacheck",
@@ -30,6 +30,7 @@ return {
 					-- Java
 					"java-debug-adapter",
 					"java-test",
+					"graphql-language-service-cli",
 				},
 			})
 		end,
@@ -37,13 +38,7 @@ return {
 	{
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
-			require("mason-lspconfig").setup({
-				-- Automatically install servers configured via vim.lsp.config
-				-- except for jdtls which we manage manually via ftplugin
-				automatic_installation = {
-					exclude = { "jdtls" },
-				},
-			})
+			require("mason-lspconfig").setup({})
 		end,
 	},
 	{
@@ -69,57 +64,30 @@ return {
 			})
 
 			-- Enable all LSP servers (can pass a table to enable multiple at once)
-			vim.lsp.enable({ "lua_ls", "ts_ls", "sqlls", "marksman", "yamlls", "taplo", "dockerls" })
+			-- Note: jdtls is managed separately by ftplugin/java.lua using nvim-jdtls
+			vim.lsp.enable({ "lua_ls", "ts_ls", "sqlls", "marksman", "yamlls", "taplo", "dockerls", "graphql" })
 		end,
 	},
-	{ "mfussenegger/nvim-jdtls" },
 	{
 		"mfussenegger/nvim-dap",
-		config = function()
-			-- DAP configuration will be set up in jdtls_setup.lua
-		end,
-	},
-	{
-		"rcarriga/nvim-dap-ui",
-		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
-		config = function()
-			local dap, dapui = require("dap"), require("dapui")
-			dapui.setup()
-
-			-- Auto-open/close dapui when debugging starts/ends
-			dap.listeners.after.event_initialized["dapui_config"] = function()
-				dapui.open()
-			end
-			dap.listeners.before.event_terminated["dapui_config"] = function()
-				-- dapui.close()
-			end
-			dap.listeners.before.event_exited["dapui_config"] = function()
-				-- dapui.close()
-			end
-
-			-- custom configuration
-			dap.configurations.java = {
-				{
-					name = "Debug Launch (2GB)",
-					type = "java",
-					request = "launch",
-					vmArgs = "" .. "-Xmx2g ",
-				},
-				{
-					name = "Debug Attach (8000)",
-					type = "java",
-					request = "launch",
-					hostName = "127.0.0.1",
-					port = 8000,
-				},
-			}
-		end,
-	},
-	{
-		"theHamsta/nvim-dap-virtual-text",
-		dependencies = { "mfussenegger/nvim-dap" },
+		dependencies = {
+			"mfussenegger/nvim-jdtls",
+			"igorlfs/nvim-dap-view",
+			"theHamsta/nvim-dap-virtual-text",
+		},
 		config = function()
 			require("nvim-dap-virtual-text").setup()
+
+			local dap = require("dap")
+
+			-- Configure terminal for integrated terminal output
+			-- Following nvim-dap documentation for terminal configuration
+			dap.defaults.fallback.terminal_win_cmd = "belowright new"
+			dap.defaults.fallback.focus_terminal = true
+
+			-- Setup dap-view to show debugger UI
+			require("dap-view").setup()
+			-- See `:help dap-configuration` for more information
 		end,
 	},
 }

@@ -27,21 +27,21 @@ vim.keymap.set("n", "<leader>dh", ":nohl<CR>", { desc = "Clear search highlights
 -- Diagnostic keymaps
 vim.keymap.set("n", "<C-d>", vim.diagnostic.open_float, { desc = "Show diagnostic in floating window" })
 vim.keymap.set("n", "D", function()
-  -- Check if quickfix window is already open
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.api.nvim_buf_get_option(buf, "buftype") == "quickfix" then
-      vim.cmd.cclose() -- Close quickfix window
-      return
-    end
-  end
+	-- Check if quickfix window is already open
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if vim.api.nvim_buf_get_option(buf, "buftype") == "quickfix" then
+			vim.cmd.cclose() -- Close quickfix window
+			return
+		end
+	end
 
-  -- If not open, show all diagnostics in a 3-line window
-  local diagnostics = vim.diagnostic.get(0) -- Get all diagnostics for current buffer
-  -- Convert to quickfix format and set quickfix list
-  local qf_items = vim.diagnostic.toqflist(diagnostics)
-  vim.fn.setqflist(qf_items)
-  vim.cmd("copen 3") -- Open quickfix window with 3 lines height
+	-- If not open, show all diagnostics in a 3-line window
+	local diagnostics = vim.diagnostic.get(0) -- Get all diagnostics for current buffer
+	-- Convert to quickfix format and set quickfix list
+	local qf_items = vim.diagnostic.toqflist(diagnostics)
+	vim.fn.setqflist(qf_items)
+	vim.cmd("copen 3") -- Open quickfix window with 3 lines height
 end, { desc = "Toggle all diagnostics in 3-line quickfix window" })
 
 -- LSP keymaps (global)
@@ -54,3 +54,17 @@ vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action
 vim.keymap.set("v", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
 vim.keymap.set("n", "gf", "<cmd>e <cfile><CR>", { desc = "Goto File" })
 vim.keymap.set("n", "gF", "<cmd>e <cfile>:<cWORD><CR>", { desc = "Goto File at line" })
+
+-- Debug keymaps (nvim-dap with nvim-dap-view)
+vim.keymap.set("n", "<leader>dv", "<cmd>DapViewToggle<cr>", { desc = "Toggle DAP View" })
+vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<cr>", { desc = "Toggle Breakpoint" })
+vim.keymap.set("n", "<leader>dc", "<cmd>DapContinue<cr>", { desc = "DAP Continue" })
+vim.keymap.set("n", "<leader>dt", "<cmd>DapTerminate<cr>", { desc = "DAP Terminate" })
+
+-- Java test keymaps (nvim-jdtls)
+vim.keymap.set("n", "<leader>tc", function()
+	require("jdtls").test_class()
+end, { desc = "Test Class" })
+vim.keymap.set("n", "<leader>tm", function()
+	require("jdtls").test_nearest_method()
+end, { desc = "Test Nearest Method" })
