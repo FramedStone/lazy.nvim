@@ -55,12 +55,6 @@ vim.keymap.set("v", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action
 vim.keymap.set("n", "gf", "<cmd>e <cfile><CR>", { desc = "Goto File" })
 vim.keymap.set("n", "gF", "<cmd>e <cfile>:<cWORD><CR>", { desc = "Goto File at line" })
 
--- Debug keymaps (nvim-dap with nvim-dap-view)
-vim.keymap.set("n", "<leader>dv", "<cmd>DapViewToggle<cr>", { desc = "Toggle DAP View" })
-vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<cr>", { desc = "Toggle Breakpoint" })
-vim.keymap.set("n", "<leader>dc", "<cmd>DapContinue<cr>", { desc = "DAP Continue" })
-vim.keymap.set("n", "<leader>dt", "<cmd>DapTerminate<cr>", { desc = "DAP Terminate" })
-
 -- Java test keymaps (nvim-jdtls)
 vim.keymap.set("n", "<leader>tc", function()
 	require("jdtls").test_class()
